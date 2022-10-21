@@ -10,12 +10,14 @@ import SwiftUI
 
 struct ScrumsView: View {
     @Binding var scrums: [DailyScrum]
+    @State private var isPresentingNewScrumView = false
+    @State private var newScrumData = DailyScrum.Data()
+    
+    @Environment(\.scenePhase) private var scenePhase
+    let saveAction: ()->Void
     
     var body: some View {
         List {
-//            Text("hello")
-//            Text("goodbye")
-//            Label("600", systemImage: "hourglass.tophalf.fill")
             ForEach($scrums) { $scrum in
                 NavigationLink(destination: DetailView(scrum: $scrum)) {
                     CardView(scrum: scrum)
@@ -25,10 +27,36 @@ struct ScrumsView: View {
         }
         .navigationTitle("Daily Scrums")
         .toolbar {
-            Button(action: {}) {
+            Button(action: {
+                isPresentingNewScrumView = true;
+            }) {
                 Image(systemName: "plus")
             }
             .accessibilityLabel("New Scrum")
+        }
+        .sheet(isPresented: $isPresentingNewScrumView) {
+            NavigationView {
+                DetailEditView(data: $newScrumData)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Dismiss") {
+                                isPresentingNewScrumView = false
+                                newScrumData = DailyScrum.Data()
+                            }
+                        }
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Add") {
+                                let newScrum = DailyScrum(data: newScrumData)
+                                scrums.append(newScrum)
+                                isPresentingNewScrumView = false
+                                newScrumData = DailyScrum.Data()
+                            }
+                        }
+                    }
+            }
+        }
+        .onChange(of: scenePhase) { phase in
+            if phase == .inactive { saveAction() }
         }
     }
 }
@@ -36,7 +64,7 @@ struct ScrumsView: View {
 struct ScrumsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            ScrumsView(scrums: .constant(DailyScrum.sampleData))
+            ScrumsView(scrums: .constant(DailyScrum.sampleData), saveAction: {})
         }
     }
 }

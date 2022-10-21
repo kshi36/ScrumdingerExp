@@ -4,7 +4,7 @@ See LICENSE folder for this sample’s licensing information.
 
 import Foundation
 
-/// Keeps time for a daily scrum meeting. Keep track of the total meeting time, the time for each speaker, and the name of the current speaker.
+/// Keeps time for a daily scrum meeting. Keep track of the total meeting time, the time for each speak       er, and the name of the current speaker.
 class ScrumTimer: ObservableObject {
     /// A struct to keep track of meeting attendees during a meeting.
     struct Speaker: Identifiable {

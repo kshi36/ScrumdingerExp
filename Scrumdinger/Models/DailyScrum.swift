@@ -7,13 +7,14 @@
 
 import Foundation
 
-struct DailyScrum: Identifiable {
+struct DailyScrum: Identifiable, Codable {
     //instance vars
     let id: UUID
     var title: String
     var attendees: [Attendee]
     var lengthInMinutes: Int
     var theme: Theme
+    var history: [History] = []
     
     //constructor
     init(id: UUID = UUID(), title: String, attendees: [String], lengthInMinutes: Int, theme: Theme) {
@@ -26,7 +27,7 @@ struct DailyScrum: Identifiable {
 }
 
 extension DailyScrum {
-    struct Attendee: Identifiable {
+    struct Attendee: Identifiable, Codable {
         let id: UUID
         var name: String
         
@@ -53,6 +54,14 @@ extension DailyScrum {
         lengthInMinutes = Int(data.lengthInMinutes)
         theme = data.theme
     }
+    
+    init(data: Data) {
+       id = UUID()
+       title = data.title
+       attendees = data.attendees
+       lengthInMinutes = Int(data.lengthInMinutes)
+       theme = data.theme
+   }
 }
 
 extension DailyScrum {
